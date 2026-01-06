@@ -40,6 +40,11 @@ class PhaseFunction : public TaggedPointer<HGPhaseFunction> {
                                                                      Point2f u) const;
 
     PBRT_CPU_GPU inline Float PDF(Vector3f wo, Vector3f wi) const;
+
+    // UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+    PBRT_CPU_GPU inline Float GetGAsymmetryParam() const;
+    // UNDER_WATER | INSERTION-END |~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+
 };
 
 class HomogeneousMedium;
@@ -49,6 +54,11 @@ class CloudMedium;
 class NanoVDBMedium;
 
 struct MediumProperties;
+
+// UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+class UnderwaterHomogeneousMedium;
+struct UnderwaterMediumProperties;
+// UNDER_WATER | INSERTION-END |~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
 
 // RayMajorantSegment Definition
 struct RayMajorantSegment {
@@ -73,11 +83,13 @@ class RayMajorantIterator
 };
 
 // Medium Definition
+// UNDER_WATER | MODIFICATION |~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
 class Medium
     : public TaggedPointer<  // Medium Types
-          HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium
+          HomogeneousMedium, UnderwaterHomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium
 
           > {
+// UNDER_WATER | MODIFICATION-END |><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
   public:
     // Medium Interface
     using TaggedPointer::TaggedPointer;
@@ -97,6 +109,15 @@ class Medium
     // Medium Public Methods
     RayMajorantIterator SampleRay(Ray ray, Float tMax, const SampledWavelengths &lambda,
                                   ScratchBuffer &buf) const;
+
+    // UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+    PBRT_CPU_GPU
+    pstd::optional<UnderwaterMediumProperties> SampleUnderwaterHomogeneousMedium(const SampledWavelengths &lambda) const;
+
+    PBRT_CPU_GPU inline
+    Float GetGAsymmetryParam() const;
+    // UNDER_WATER | INSERTION-END |~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+
 };
 
 // MediumInterface Definition

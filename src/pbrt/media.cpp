@@ -206,6 +206,69 @@ std::string HomogeneousMedium::ToString() const {
         sigma_a_spec, sigma_s_spec, Le_spec, phase);
 }
 
+//OoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOo|
+// ==================================\ ~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~|
+// UNDER_WATER | EXTENDS->MEDIUM --- ||>~~~~~~~~ <º)))>< ~~~~~~~ <º)))>< ~~~~~~~ <º)))>< ~~~~~~~ <º)))|
+// ==================================/ ~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~|
+//OoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOo|
+
+// UnderwaterHomogeneousMedium Method Definitions
+UnderwaterHomogeneousMedium *UnderwaterHomogeneousMedium::Create(const ParameterDictionary &parameters,
+                                             const FileLoc *loc, Allocator alloc) {
+    Spectrum sig_a = nullptr, sig_s = nullptr, kd = nullptr;
+    std::string preset = parameters.GetOneString("preset", "");
+    if (!preset.empty()) {
+        if (!GetMediumScatteringProperties(preset, &sig_a, &sig_s, alloc))
+            Warning(loc, "Material preset \"%s\" not found.", preset);
+    }
+    if (!sig_a) {
+        sig_a =
+            parameters.GetOneSpectrum("sigma_a", nullptr, SpectrumType::Unbounded, alloc);
+        if (!sig_a)
+            sig_a = alloc.new_object<ConstantSpectrum>(1.f);
+    }
+    if (!sig_s) {
+        sig_s =
+            parameters.GetOneSpectrum("sigma_s", nullptr, SpectrumType::Unbounded, alloc);
+        if (!sig_s)
+            sig_s = alloc.new_object<ConstantSpectrum>(1.f);
+    }
+
+    kd =
+            parameters.GetOneSpectrum("sigma_kd", nullptr, SpectrumType::Unbounded, alloc);
+    if (!kd) {
+        Warning("No sigma_kd coefficient was provided in the file for UnderwaterHomogeneousMedium,"
+                    " initializing values as 0.f, but the rendering will not match reality.");
+        kd = alloc.new_object<ConstantSpectrum>(0.f);
+    }
+
+    Spectrum Le =
+        parameters.GetOneSpectrum("Le", nullptr, SpectrumType::Illuminant, alloc);
+    Float LeScale = parameters.GetOneFloat("Lescale", 1.f);
+    if (!Le || Le.MaxValue() == 0)
+        Le = alloc.new_object<ConstantSpectrum>(0.f);
+    else
+        LeScale /= SpectrumToPhotometric(Le);
+
+    Float sigmaScale = parameters.GetOneFloat("scale", 1.f);
+    Float g = parameters.GetOneFloat("g", 0.0f);
+
+    return alloc.new_object<UnderwaterHomogeneousMedium>(sig_a, sig_s, kd, sigmaScale, Le, LeScale, g,
+                                               alloc);
+}
+
+std::string UnderwaterHomogeneousMedium::ToString() const {
+    return StringPrintf(
+        "[ Homogeneous medium sigma_a_spec: %s sigma_s_spec: %s kd_spec: %s Le_spec: %s phase: %s ]",
+        sigma_a_spec, sigma_s_spec, kd_spec, Le_spec, phase);
+}
+
+//OoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOo|
+// ==================================\ ~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~|
+// UNDER_WATER | EXTENDS-END --------||> ~~~~~~~ <º)))>< ~~~~~~~ <º)))>< ~~~~~~~ <º)))>< ~~~~~~~ <º)))|
+// ==================================/ ~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~|
+//OoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOo|
+
 STAT_MEMORY_COUNTER("Memory/Volume grids", volumeGridBytes);
 
 // GridMedium Method Definitions
@@ -670,6 +733,10 @@ Medium Medium::Create(const std::string &name, const ParameterDictionary &parame
     Medium m = nullptr;
     if (name == "homogeneous")
         m = HomogeneousMedium::Create(parameters, loc, alloc);
+    // UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+    else if (name == "underwaterhomogeneous")
+        m = UnderwaterHomogeneousMedium::Create(parameters, loc, alloc);
+    // UNDER_WATER | INSERTION-END |~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
     else if (name == "uniformgrid") {
         m = GridMedium::Create(parameters, renderFromMedium, loc, alloc);
     } else if (name == "rgbgrid") {

@@ -72,6 +72,9 @@ class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera,
     PBRT_CPU_GPU
     pstd::optional<CameraWiSample> SampleWi(const Interaction &ref, Point2f u,
                                             SampledWavelengths &lambda) const;
+
+    // UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+    PBRT_CPU_GPU inline Medium GetMedium() const;
 };
 
 }  // namespace pbrt

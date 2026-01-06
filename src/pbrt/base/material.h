@@ -30,14 +30,18 @@ class MeasuredMaterial;
 class SubsurfaceMaterial;
 class ThinDielectricMaterial;
 class MixMaterial;
+// UNDER_WATER | INSERTION |~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+class WaterBoundaryMaterial;
+class WaterSurfaceMaterial;
+// UNDER_WATER | INSERTION-END |~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
 
 // Material Definition
 class Material
     : public TaggedPointer<  // Material Types
           CoatedDiffuseMaterial, CoatedConductorMaterial, ConductorMaterial,
           DielectricMaterial, DiffuseMaterial, DiffuseTransmissionMaterial, HairMaterial,
-          MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial
-
+          MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial,
+          WaterBoundaryMaterial, WaterSurfaceMaterial
           > {
   public:
     // Material Interface
@@ -66,6 +70,7 @@ class Material
     PBRT_CPU_GPU inline FloatTexture GetDisplacement() const;
 
     PBRT_CPU_GPU inline bool HasSubsurfaceScattering() const;
+
 };
 
 }  // namespace pbrt

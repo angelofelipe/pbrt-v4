@@ -186,6 +186,10 @@ WavefrontPathIntegrator::WavefrontPathIntegrator(
     lightSampler = LightSampler::Create(lightSamplerName, allLights, alloc);
     LOG_VERBOSE("Finished creating light sampler");
 
+    // TODO-UNDER_WATER: Adapt the Wavefront class to support underwater logic, but not necessarily in this file;
+    //                   modify the end of the main method to call another integration constructor.
+    // UNDER_WATER | MODIFICATION |~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(((º> ~~~~~~~ ><(|
+    // if (scene.integrator.name != "path" && scene.integrator.name != "volpath" && scene.integrator.name != "underwater")
     if (scene.integrator.name != "path" && scene.integrator.name != "volpath")
         Warning(&scene.integrator.loc,
                 "Ignoring specified integrator \"%s\": the wavefront integrator "
