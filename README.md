@@ -1,3 +1,6 @@
+# pbrt-v4-underwater
+For example scenes, an explanation of how the UnderwaterIntegrator works and detailed instructions on compiling and rendering, please visit the [pbrt-v4-underwater](https://github.com/angelofelipe/pbrt-v4-underwater) repository.
+
 pbrt, Version 4 (Early Release)
 ===============================
 
