@@ -307,7 +307,7 @@ class UnderwaterHomogeneousMedium: public HomogeneousMedium {
             return UnderwaterMediumProperties{sigma_a, sigma_s, sigma_t, kd, &phase, Le};
         }
 
-    PBRT_CPU_GPU inline Float GetGAsymmetryParam() const { phase.GetGAsymmetryParam(); }
+    PBRT_CPU_GPU inline Float GetGAsymmetryParam() const { return phase.GetGAsymmetryParam(); }
 
     private:
         // UnderwaterHomogeneousMedium Private Data
