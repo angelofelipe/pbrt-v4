@@ -285,7 +285,6 @@ class ThinDielectricBxDF {
 class WaterSurfaceBxDF {
   public:
     // PBRT Standard BxDF Interface
-    PBRT_CPU_GPU
     WaterSurfaceBxDF() = default;
 
     PBRT_CPU_GPU
